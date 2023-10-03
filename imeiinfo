@@ -1,0 +1,1 @@
+adb shell "imei=$(input keyevent KEYCODE_CALL;sleep 1;input text '*#06#'; uiautomator dump --compressed /dev/stdout|sed s/\>\<\/\\n/g|grep -A1 IMEI|tail -n1|sed -e 's/.*text=\"//' -e 's/\".*//'); echo ${imei:0:16}"
