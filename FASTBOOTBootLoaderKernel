@@ -1,0 +1,210 @@
+NOTE:
+I'm not a developer or something even near to that. All information provided here is copied from different sources and according to the best of my knowledge.
+I have tested this on different devices using Windows 8.1 & 10. I'll not be responsible for any harm to you or your device. It works perfectly for me. You may try it on your own risk.
+Save / backup your data before performing any actions.
+
+WHAT IS ADB/FASTBOOT
+ADB and fastboot are different protocols used through PC to perform different command line operations on device through USB in ROM/Recovery and bootloader mode respectively.
+Android Debugging Bridge is basically used by developers to identify and fix bugs in OS (ROM). ADB works in ROM and recovery both.
+Fastboot works in bootloader mode even when phone is not switched on in Recovery or ROM or even if Android isn't installed on phone. In later case, bootloader can be accessed by certain button combination while powering on device; usually Power + Vol. Down. See here the booting process of Android devices.
+Fastboot/ADB setup is to be made on PC to use this mode. ADB mode has more flexibility than fastboot as it supports more types of flashable files to be flashed. ADB also supports backing up Apps and Data. ADB/fastboot commands can be used to flash recovery and boot images. It can also flash ROMs and mods like rooting solutions and XPOSED by booting into recovery. And above all, it is the only way to unlock bootloader without which the device functionality is too limited. Read here why we need to unlock bootloader.
+In bootloader mode, usually boot logo or fastboot logo appears on device screen.
+
+SETUP
+Enable USB Debugging in Settings > Developer Options. If not available, Dev. Options can be accessed by tapping 5 (or 7) times Build Number in Settings > About Phone.
+Allow ADB root access in Dev. Options or SuperSU. Some commands need root.
+Allow data transfer over ADB when prompted on device screen. Otherwise you might get errors like device unauthorized etc. So keep screen unlocked at first connect.
+Disable MTP, PTP, UMS etc. from USB computer connection on device to avoid any interruptions.
+Install Android SDK or simply install 15 Seconds ADB Setup 1.4.2. It works up to Android Lollipop (AOSP 5). Credits to Snoop05
+Windows 8.1 users who got error installing this setup should first install Windows Update KB2917929.
+You will have to navigate to adb folder each time you start cmd. Or setup adb to work globally. On your PC, go to System Properties > Advanced System Settings > Environment Variables. Click on New (User Variables). Variables Name: ADB ( Or anything you want). Variables Value: ;C:\adb (if installed 15 seconds setup) or ;C:\SDK\paltform-tools.
+Install ADB USB Drivers for your Android Device. To do this automatically, download and run ADB Driver Installer. Connect device through USB cable and install drivers.
+NOTE: Spaces in file paths don't work in adb commands. Non-English characters and languages don't work either. Also the commands are case-sensitive.
+
+There is a long list of adb/fastboot commands to perform numerous operations. Here are a few of those being listed keeping in view certain tasks:
+
+COMMON COMMANDS
+On PC run Command Prompt as Administrator.
+To check connected devices when ROM is running on phone:
+Code:
+adb devices
+To boot into bootloader mode:
+Code:
+adb reboot bootloader
+To check connected devices when in bootloader mode:
+Code:
+fastboot devices
+To boot into ROM:
+Code:
+fastboot reboot
+To boot into recovery:
+Code:
+fastboot reboot recovery
+There are some common Linux commands which can be used in combination with these commands to perform certain operation. However, ADB | FASTBOOT is not necessarily required for these Linux commands. These can be run directly from Terminal Emulator in ROM or Custom Recovery. Some of them are given below.
+
+UNLOCK BOOTLOADER
+NOTE: Some newer devices don't allow unlocking of bootloader directly to ensure more security. Instead an official method is provided to unlock BL using PC.
+Read here to know about the risks of BL unlocking.
+
+To check the bootloader status:
+Code:
+fastboot oem device-info
+“True” on unlocked status.
+If "false", run the following to unlock:
+Code:
+fastboot oem unlock
+
+However these are OEM specific commands and may differ or not work on all devices. Fastboot's own commands (which are part of AOSP source and) that can unlock bootloader allowing flashing of partitions:
+Code:
+fastboot flashing unlock
+Allow flashing of bootloader related partitions too:
+Code:
+fastboot flashing unlock_critical
+
+FORMAT DATA PARTITION
+This will erase your data.
+Code:
+fastboot format:ext4 userdata
+It can be performed on other flash partitions as well. A general syntax is 'fastboot format:FS PARTITION'
+
+FLASH RECOVERY
+Download recovery.img (specific for your device) to adb folder.
+To test the recovery without permanently flashing, run the following:
+Code:
+fastboot boot recovery.img
+On next reboot, recovery will be overwritten by previous recovery.
+Or to permanently flash recovery, run:
+Code:
+fastboot flash recovery recovery.img
+fastboot reboot recovery
+Stock ROM's often tend to replace custom recovery with stock one on first reboot. That's why, booting into recovery is recommended before booting into ROM.
+
+FLASH KERNEL
+Download boot.img (specific for your device) to adb folder and run following:
+Code:
+fastboot flash boot boot.img
+
+FLASH ROM
+Download ROM.zip (for your device) created for fastboot i.e. with android-info.txt and android-product.txt.
+To wipe your device and then to flash .zip:
+Code:
+fastboot -w
+fastboot update </path/to/your/Rom.zip>
+
+PASSING FASTBOOT ARGUMENTS
+Fastboot supports passing options. For example, while booting a modified kernel image with FramBuffer Console support, console device and its font can be provided as option:
+Code:
+fastboot boot -c "console=tty0,115200 fbcon=font:VGA8x8" boot-fbcon.img
+
+GAIN ROOT (Not recommended method. Better flash directly through custom recovery).
+Root is required to modify the contents of /system. You can read here further.
+Download (flashable) supersu.zip and custom or modified recovery.img (having support to flash .zip files) to adb folder and run the following:
+Code:
+fastboot boot recovery.img
+Now once you are in recovery, adb will work instead of fastboot.
+To copy files from PC to device and then to extract files, run the following:
+Code:
+adb push supersu.zip /tmp
+adb shell /sbin/recovery --update_package=/tmp/supersu.zip
+
+BACKUP / RESTORE APPS & DATA (From/To PC)
+To backup and restore all apps and their data:
+Code:
+adb backup -apk -shared -all -system -f C:\backup.ab
+adb restore C:\backup.ab
+Read here for details.
+
+COPY WHOLE PARTITION IMAGE (within device)
+This method can be used to backup whole device e.g. to backup /data/ including /data/media/ i.e. Internal SD Card which isn't backed up by custom recovery (TWRP). Or you can get any partition image for development purpose. This method retains complete directory structure as well as file permissions, attributes and contexts.
+To jump from windows command prompt to android device shell:
+Code:
+adb shell
+These commands can also be given from Recovery Terminal instead of ADB.
+To get SuperUser access (in ROM):
+Code:
+su
+To list all available partitions or mount points on device:
+Code:
+cat /proc/partitions
+Or go to "/dev/block/platform/" folder on device. Search for the folder having folder "by-name" inside it. It's msm_sdcc.1 (on Nokia X2). Run the following:
+Code:
+ls -al /dev/block/platform/*/by-name
+Or simply use DiskInfo app to get partition name you want to copy. Say you want to copy /data (userdata) partition. On Nokia X2DS, it is mmcblk0p25.
+To confirm:
+Code:
+readlink /dev/block/bootdevice/by-name/userdata
+Run the following to copy partition:
+Code:
+dd if=/dev/block/mmcblk0p25 of=/sdcard/data.img
+or
+Code:
+cat /dev/block/mmcblk0p25 > /sdcard/data.img
+or
+Code:
+dd if=/dev/block/bootdevice/by-name/userdata of=/sdcard/data.img
+data.img will be copied to your SD card.
+It also works inversely (restore):
+Code:
+dd if=/sdcard/data.img of=/dev/block/mmcblk0p25
+data.img from your SD card will be written to device.
+Similarly you can copy system.img, boot.img or any other partition. However boot.img and other partitions may not be copied in ROM but in recovery mode only. So better use recovery for dd except if you're​ going to dd recovery partition itself. You can read here more about android partitions.
+
+COPY WHOLE FOLDER (within device)
+This method can be used to backup folders like /data/media/ which isn't backed up by custom recovery (TWRP).
+
+To jump from windows command prompt to android device shell:
+Code:
+adb shell
+These commands can also be given from Recovery Terminal.
+To get SuperUser access (in ROM):
+Code:
+su
+To copy from Internal Memory to SD Card:
+Code:
+cp -a /data/media/0/. /external_sd/internal_backup/
+Or if you don't have SU permission:
+Code:
+cp -a /external_sd/. /sdcard/
+To copy from SD Card to Internal Memory:
+Code:
+cp -a /external_sd/internal_backup/. /data/media/0/
+However, if you are copying to an SD card with FAT32 file system, android permissions of files won't be retained and you would have to fix permissions yourself. In this case, you can use tar command to create archive of files along with their attributes ( permissions: mode & ownership + time-stamps) and security contexts etc. But FAT32 FS has also a limitations of 4GB maximum file size. You may use "split" command along with "tar" to split the archive in smaller blocks. Or use exFat or Ext4 filesystem for larger file support. Ext4 would give higher writing speed in Android but not supported in Windows i.e. SD card can't be mounted in Windows. MTP however works.
+To jump from windows command prompt to android device shell:
+Code:
+adb shell
+To get SuperUser access (in ROM):
+Code:
+su
+To copy from Internal Memory to SD Card:
+Code:
+tar cvpf /external_sd/internal_backup/media.tar /data/media/0/
+To extract from SD Card to Internal Memory (along with path):
+Code:
+tar -xvf /external_sd/internal_backup/media.tar
+To extract from SD Card to some other location, use "-C":
+Code:
+tar -xvf /external_sd/internal_backup/media.tar -C /data/media/0/extracted_archive/
+
+COPY WHOLE FOLDER (From/To PC)
+This method can be used to backup folders like /data/media/ which isn't backed up by custom recovery (TWRP).
+
+To copy from PC to device:
+Code:
+adb push \path\to\folder\on\PC\ /path/to/folder/on/device/
+To copy from device to PC:
+Code:
+adb pull /path/to/folder/on/device/ \path\to\folder\on\PC\
+
+After copying from PC to device's Internal Memory (/data/media/), you might get Permission Denied error e.g. apps can't write or even read from Internal Memory. It's because Android (Linux) and Windows have different file permissions system. To FIX PERMISSIONS, boot into recovery and run following commands:
+(Credits to xak944 :))
+Code:
+adb shell
+To take ownership of whole "media" directory:
+Code:
+chown -R media_rw:media_rw /data/media/
+To fix permissions of directories:
+Code:
+find /data/media/ -type d -exec chmod 775 '{}' ';'
+To fix permissions of files:
+Code:
+find /data/media/ -type f -exec chmod 664 '{}' ';'
