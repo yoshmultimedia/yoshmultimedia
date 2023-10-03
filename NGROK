@@ -1,0 +1,209 @@
+Berikut cara setupnya:
+
+::Ngrok download
+
+wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip
+:: Extract file:
+unzip ngrok-stable-linux-arm.zip
+tar -xvzf ngrok-stable-linux-arm64.tgz
+
+:: Conect acount ngrok:
+
+./ngrok authtoken 2W5afG1L7DAkHKzPTi3DkuL4ZrD_6czPpNrEmeN1CahWD8U5z
+:: copy ke folder /usr/bin:
+
+cp ngrok /usr/bin
+
+:: Setup ngrok.yml
+
+nano /root/.ngrok2/ngrok.yml
+
+:: isikan command:
+
+tunnels:
+  web nextcloud:
+    addr: localhost:80
+    proto: http
+  ssh:
+    addr: localhost:22
+    proto: tcp
+  webmin:
+    addr: localhost:10000
+    proto: http
+
+:::Membuat autostart
+
+nano /etc/init.d/ngrok
+
+:: isikan perintah
+
+#!/bin/sh /etc/rc.common
+ngrok service start
+START=60
+ngrok start --all  --config=/root/.ngrok2/ngrok.yml
+
+
+:: set chmod
+
+chmod +x ngrok
+
+
+nextcloud
+apt-get install apache2 libapache2-mod-php mariadb-server php-xml php-cli php-cgi php-mysql php-mbstring php-gd php-curl php-zip wget unzip -y
+nano /etc/php/7.3/apache2/php.ini
+memory_limit = 512M
+upload_max_filesize = 500M
+post_max_size = 500M
+max_execution_time = 300
+date.timezone = Asia/Jakarta
+systemctl start apache2
+ systemctl start mariadb
+ systemctl enable apache2
+ systemctl enable mariadb
+mysql -u root -p
+CREATE DATABASE nextclouddb;
+CREATE USER 'muhaimin'@'localhost' IDENTIFIED BY 'muhaimin';
+GRANT ALL ON nextclouddb.* TO 'muhaimin'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+https://download.nextcloud.com/server/releases/latest.zip
+unzip latest.zip
+mv nextcloud /var/www/html/
+chown -R www-data:www-data /var/www/html/nextcloud/
+chmod -R 755 /var/www/html/nextcloud/
+nano /etc/apache2/sites-available/nextcloud.conf
+
+<VirtualHost *:80>
+     ServerAdmin nextcloud
+     DocumentRoot /var/www/html/nextcloud/
+     ServerName nextcloud
+
+     Alias /nextcloud "/var/www/html/nextcloud/"
+
+     <Directory /var/www/html/nextcloud/>
+        Options +FollowSymlinks
+        AllowOverride All
+        Require all granted
+          <IfModule mod_dav.c>
+            Dav off
+          </IfModule>
+        SetEnv HOME /var/www/html/nextcloud
+        SetEnv HTTP_HOME /var/www/html/nextcloud
+     </Directory>
+
+     ErrorLog ${APACHE_LOG_DIR}/error.log
+     CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+
+a2ensite nextcloud.conf
+a2enmod rewrite
+a2enmod headers
+a2enmod env
+a2enmod dir
+a2enmod mime
+
+systemctl restart apache2
+
+apt-get install python-certbot-apache -y
+certbot --apache -d localhost
+
+log
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Plugins selected: Authenticator apache, Installer apache
+Enter email address (used for urgent renewal and security notices) (Enter 'c' to
+cancel): admin@example.com
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Please read the Terms of Service at
+https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf. You must
+agree in order to register with the ACME server at
+https://acme-v02.api.letsencrypt.org/directory
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(A)gree/(C)ancel: A
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Would you be willing to share your email address with the Electronic Frontier
+Foundation, a founding partner of the Let's Encrypt project and the non-profit
+organization that develops Certbot? We'd like to send you email about our work
+encrypting the web, EFF news, campaigns, and ways to support digital freedom.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: Y
+Obtaining a new certificate
+Performing the following challenges:
+http-01 challenge for nextcloud.example.com
+Enabled Apache rewrite module
+Waiting for verification...
+Cleaning up challenges
+Created an SSL vhost at /etc/apache2/sites-available/nextcloud-le-ssl.conf
+Deploying Certificate to VirtualHost /etc/apache2/sites-available/nextcloud-le-ssl.conf
+Enabling available site: /etc/apache2/sites-available/nextcloud-le-ssl.conf
+
+Please choose whether or not to redirect HTTP traffic to HTTPS, removing HTTP access.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+1: No redirect - Make no further changes to the webserver configuration.
+2: Redirect - Make all requests redirect to secure HTTPS access. Choose this for
+new sites, or if you're confident your site works on HTTPS. You can undo this
+change by editing your web server's configuration.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Select the appropriate number [1-2] then [enter] (press 'c' to cancel): 2
+apt-get update
+apt-get upgrade -y
+apt-get dist-upgrade -y
+
+apt install
+apparmor
+jq
+wget
+curl
+udisks2
+libglib2.0-bin
+network-manager
+dbus
+lsb-release
+systemd-journal-remote
+systemd-resolved -y
+sudo -i
+
+apt update && sudo apt upgrade -y && sudo apt autoremove -y
+
+apt --fix-broken install
+
+apt install apparmor jq wget curl udisks2 libglib2.0-bin network-manager dbus lsb-release systemd-journal-remote systemd-resolved -y
+
+curl -fsSL get.docker.com | sh
+apt install systemd-resolved
+
+sudo nano /etc/systemd/resolved.conf
+DNS=192.168.1.1
+DNSStubListener=no
+sudo systemctl restart systemd-resolved
+sudo systemctl stop systemd-resolved
+sudo systemctl disable systemd-resolved
+sudo systemctl enable systemd-resolved.service
+sudo systemctl start systemd-resolved.service
+You can bypass this error by using the command 
+systemd --version
+wget https://github.com/home-assistant/os-agent/releases/download/1.6.0/os-agent_1.6.0_linux_aarch64.deb
+
+ dpkg -i os-agent_1.6.0_linux_aarch64.deb
+wget https://github.com/home-assistant/supervised-installer/releases/latest/download/homeassistant-supervised.deb
+
+apt install ./homeassistant-supervised.deb
+
+sudo dpkg -i --ignore-depends=systemd-resolved homeassistant-supervised.deb
+
+Or you can create a fake systemd-resolved package using equivs which will satisfy the missing dependency.
+
+Install equivs
+sudo apt install equivs
+Generate a template control file
+equivs-control systemd-resolved.control
+Fix the package name
+sed -i 's/<package name; defaults to equivs-dummy>/systemd-resolved/g' systemd-resolved.control
+Build the package
+equivs-build systemd-resolved.control
+Install it
+sudo dpkg -i systemd-resolved_1.0_all.deb
+That should satisfy the homeassistant-supervised package’s dependency.
