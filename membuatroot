@@ -1,0 +1,31 @@
+WARNING! THIS WILL WIPE ALL DATA FROM YOUR DEVICE!
+
+1. Get your android and device version from settings -> about phone -> service provider software version (for me its Seri-Hpmu EUX)
+2. Download the latest stock ROM for your specific device from https://samfrew.com/
+3. Download and install Odin from https://samsungodin.com/download/
+4. Activate developer settings (click 8x on buildnumber)
+5. Activate usb debugging from the developer settings
+6. Activate OEM Unlocking (THIS WILL WIPE ALL YOUR DATA)
+7. After this factory reset, hold down volume up + power to get to the recovery
+8. Choose to reboot to bootloader
+9. You will be asked if you want to unlock the bootloader, choose yes
+
+10. Put the downloaded stock ROM onto your device (sdcard, internal storage, etc)
+11. Download the Magisk app from the Playstore
+12. Open Magisk and hit install
+13. Select the downloaded stock ROM from your storage and wait for the process
+14. Copy the magisk-modified ROM to your PC
+
+15. Pack the magisk-modified ROM in a TAR and flash as "AP" with Odin
+16. Let the phone boot and complete the initial setup
+17. Open Magisk and reboot if suggested
+(18. Go into Magisk again, go to Settings and enable Zygisk
+19. and reboot again)
+
+Magisk should now show the current version in "installed" and apps can request superuser access now. If "installed" shows n/a then magisk root did not work.
+
+If anything fails, you should always be able to press the powerbutton + volume up to get to the bootloader (big blue screen) and flash the AP of the stock rom.
+
+Need help with:
+- Patch dm-verity/vbmeta (to install a custom recovery)
+- Porting TWRP to Exynos1380 kernel
