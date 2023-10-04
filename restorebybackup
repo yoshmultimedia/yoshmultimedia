@@ -1,6 +1,8 @@
+
+-copy file ke internal storage
 -cd /storage/self/primary
--dd if=sec_efs.bin of=/dev/block/sda2
--dd if=efs.bin of=/dev/block/sda1
+-dd if=lokasi/nama/file/sumber of=/dev/block/sda2 atau dd if=sec-efs.bin of=/dev/block/by-name/sec_efs
+  
 -lun0
 -sda1 /user_part/efs.img /debug_ramdisk/.magisk/mirror/mnt/vendor/efs
 -sda2 /user_part/efs.img  /debug_ramdisk/.magisk/mirror/efs
