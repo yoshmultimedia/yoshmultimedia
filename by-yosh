@@ -1,0 +1,55 @@
+dd if=/dev/block/sda14 of=/storage/self/primary/a54/blcmd
+dd if=/dev/block/sda15 of=/storage/self/primary/a54/boot
+dd if=/dev/block/sda8 of=/storage/self/primary/a54/bota
+dd if=/dev/block/sda35 of=/storage/self/primary/a54/cache
+dd if=/dev/block/sda20 of=/storage/self/primary/a54/cp_debug
+dd if=/dev/block/sdd1 of=/storage/self/primary/a54/cpefs
+dd if/dev/block/sda30 of=/storage/self/primary/a54/debug
+dd if=/dev/block/sda25 of=/storage/self/primary/a54/dqmdbg
+dd if=/dev/block/sda10 of=/storage/self/primary/a54/drm_plugin
+dd if=/dev/block/sda13 of=/storage/self/primary/a54/dtbo
+dd if=/dev/block/sda1 of=/storage/self/primary/a54/efs
+dd if=/dev/block/sda4 of=/storage/self/primary/a54/epbl
+dd if=/dev/block/sda29 of=/storage/self/primary/a54/fmp_selftest
+dd if=/dev/block/sda9 of=/storage/self/primary/a54/harx
+dd if=/dev/block/sda16 of=/storage/self/primary/a54/init_boot 
+
+dd if=/dev/block/sda24 of=/storage/self/primary/a54/keyrefuge
+dd if=/dev/block/sda7 of=/storage/self/primary/a54/keystorage 
+dd if=/dev/block/sda28 of=/storage/self/primary/a54/metadata
+dd if=/dev/block/sda23 of=/storage/self/primary/a54/misc
+
+dd if=/dev/block/sda21 of=/storage/self/primary/a54/nad_refer 
+dd if=/dev/block/sda36 of=/storage/self/primary/a54/omr 
+dd if=/dev/block/sda34 of=/storage/self/primary/a54/optics
+dd if=/dev/block/sda5 of=/storage/self/primary/a54/param
+dd if=/dev/block/sda22 of=/storage/self/primary/a54/persistent
+dd if=/dev/block/sda33 of=/storage/self/primary/a54/prism
+dd if=/dev/block/sda19 of=/storage/self/primary/a54/radio
+dd if=/dev/block/sda18 of=/storage/self/primary/a54/recovery
+dd if=/dev/block/sda31 of=/storage/self/primary/a54/reserved
+
+
+dd if=/dev/block/sda17 of=/storage/self/primary/a54/vendor_boot
+dd if=/dev/block/sda27 of=/storage/self/primary/a54/vbmeta_system
+dd if=/dev/block/sda26 of=/storage/self/primary/a54/vbmeta
+
+
+
+dd if=/dev/block/sda6 of=/storage/self/primary/a54/up_param
+dd if=/dev/block/sda12 of=/storage/self/primary/a54/uhcfg
+dd if=/dev/block/sda11 of=/storage/self/primary/a54/uh
+
+
+
+dd if=/dev/block/sda3 of=/storage/self/primary/a54/steady
+dd if=/dev/block/sda2 of=/storage/self/primary/a54/sec_efs
+dd if=/dev/block/sde of=/storage/self/primary/a54/sde
+dd if=/dev/block/sdd of=/storage/self/primary/a54/sdd
+dd if=/dev/block/sdc of=/storage/self/primary/a54/sdc
+dd if=/dev/block/sdb of=/storage/self/primary/a54/sdb
+dd if=/dev/block/sda of=/storage/self/primary/a54/sda
+dd if=/dev/block/sda32 of=/storage/self/primary/a54/super
+
+dd if=/dev/block/sda37 of=/storage/self/primary/a54/userdata
+
