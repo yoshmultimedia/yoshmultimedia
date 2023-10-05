@@ -13,9 +13,7 @@ resetprop ro.build.type userdebug
 setprop sys.usb.config diag,diag_mdm,adb
 select mode transfer file from phone
 write imei dulu
-
 Detect Port
-
 qpst or qfil pilih port QUalcom HS-Diagnostics 903A dan isi file *.XQCN
 
 
