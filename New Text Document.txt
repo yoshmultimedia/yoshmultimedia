@@ -1,0 +1,7 @@
+adb devices lalu enter
+adb shell lalu enter
+su 
+resetprop ro.bootmode usbradio lalu enter
+resetprop ro.build.type userdebug lalu enter
+setprop sys.usb.config diag,diag_mdm,adb lalu enter
+Kemudian , pilih mode transfer file
