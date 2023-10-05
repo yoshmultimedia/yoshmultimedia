@@ -1,2 +1,6 @@
 adb shell
-rm -f
+su
+rm -f /dev/block/by-name/modemst1
+rm -f /dev/block/by-name/modemst1
+rm -f /dev/block/by-name/fsg
+reboot
