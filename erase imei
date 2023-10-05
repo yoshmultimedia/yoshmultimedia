@@ -1,3 +1,4 @@
+cara repair imei dengan adb wajib root tel
 adb shell
 su
 rm -f /dev/block/by-name/modemst1
