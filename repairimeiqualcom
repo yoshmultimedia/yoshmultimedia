@@ -1,13 +1,17 @@
-
-tutorial repair network qualcom
-
+cara repair imei dengan adb wajib root tel
+adb shell
+su
+rm -f /dev/block/by-name/modemst1
+rm -f /dev/block/by-name/modemst1
+rm -f /dev/block/by-name/fsg
+reboot
 adb devices
 adb shell
 su 
-erase
 resetprop ro.bootmode usbradio
 resetprop ro.build.type userdebug
 setprop sys.usb.config diag,diag_mdm,adb
+
 select mode transfer file from phone
 Detect Port
 QUalcom HS-
