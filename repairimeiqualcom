@@ -1,0 +1,12 @@
+
+tutorial repair network qualcom
+adb devices
+adb shell
+su 
+resetprop ro.bootmode usbradio
+resetprop ro.build.type userdebug
+setprop sys.usb.config diag,diag_mdm,adb
+select mode transfer file from phone
+Detect Port
+QUalcom HS-
+qpst or qfil
