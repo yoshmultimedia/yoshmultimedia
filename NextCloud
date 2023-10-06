@@ -1,0 +1,158 @@
+How to Install NextCloud on Ubuntu 22.04
+September 12, 2022 by Jeff Wilson
+how to install nextcloud on ubuntu 22.04
+In this blog post, we are going to explain step-by-step how to install the latest NextCloud on Ubuntu 22.04.
+
+NextCloud is an open-source cloud storage service used to store, share, and sync data across multiple devices. NextCloud storage software is written in PHP and Javascript, which makes it very easy to install. In this tutorial, we are going to install and set up NextCloud with the LAMP stack.
+
+Installation of NextCloud with the LAMP stack may take up to 15 minutes. Let’s get things working!
+
+
+Table of Contents
+
+Prerequisites
+Step 1. Update the System
+Step 2. Install Apache Web Server
+Step 3. Install PHP8.1 with dependencies
+Step 4. Install MariaDB database server
+Step 5. Create Database and Database User
+Step 6. Install Nextcloud
+Step 7. Create Apache Virtual Host File
+Step 8. Finish NextCloud Installation
+Prerequisites
+A server with Ubuntu 22.04 as OS
+User privileges: root or non-root user with sudo privileges
+NVMe 1 VPS plan (1GB of RAM and 1 CPU core)
+Step 1. Update the System
+Before we install the NextCloud storage service we will update the system packages to the latest versions available.
+
+sudo apt update -y && sudo apt upgrade -y
+Step 2. Install Apache Web Server
+Install the Apache Web server with the following command:
+
+sudo apt install apache2
+Once installed, start and enable the service.
+
+sudo systemctl enable apache2 && sudo systemctl start apache2
+Check if the service is up and running:
+
+sudo systemctl status apache2
+You should receive the following output:
+
+root@host:~# sudo systemctl status apache2
+● apache2.service - The Apache HTTP Server
+     Loaded: loaded (/lib/systemd/system/apache2.service; enabled; vendor preset: enabled)
+     Active: active (running) since Tue 2022-05-17 22:03:46 UTC; 4 days ago
+       Docs: https://httpd.apache.org/docs/2.4/
+   Main PID: 84157 (apache2)
+      Tasks: 8 (limit: 4566)
+     Memory: 33.2M
+        CPU: 5min 21.702s
+     CGroup: /system.slice/apache2.service
+             ├─ 84157 /usr/sbin/apache2 -k start
+             ├─150719 /usr/sbin/apache2 -k start
+             ├─150720 /usr/sbin/apache2 -k start
+             ├─150721 /usr/sbin/apache2 -k start
+             ├─150722 /usr/sbin/apache2 -k start
+             ├─150723 /usr/sbin/apache2 -k start
+             ├─150724 /usr/sbin/apache2 -k start
+             └─150943 /usr/sbin/apache2 -k start
+
+May 18 00:00:04 host.test.vps systemd[1]: Reloading The Apache HTTP Server...
+Step 3. Install PHP8.1 with dependencies
+To install the PHP8.1 along with extensions execute the following command:
+
+sudo apt-get install php8.1 php8.1-cli php8.1-common php8.1-imap php8.1-redis php8.1-snmp php8.1-xml php8.1-zip php8.1-mbstring php8.1-curl php8.1-gd php8.1-mysql
+Step 4. Install MariaDB database server
+To install the MariaDB database server, execute the command below.
+
+sudo apt install mariadb-server
+Start and enable the mariadb.service with the following commands:
+
+sudo systemctl start mariadb && sudo systemctl enable mariadb
+Check the status of the mariadb.service
+
+sudo systemctl status mariadb
+You should receive the following output:
+
+root@host:~# sudo systemctl status mariadb
+● mariadb.service - MariaDB 10.6.7 database server
+     Loaded: loaded (/lib/systemd/system/mariadb.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2022-05-16 19:40:12 UTC; 5 days ago
+       Docs: man:mariadbd(8)
+             https://mariadb.com/kb/en/library/systemd/
+   Main PID: 42716 (mariadbd)
+     Status: "Taking your SQL requests now..."
+      Tasks: 7 (limit: 4566)
+     Memory: 56.9M
+        CPU: 2min 51.567s
+     CGroup: /system.slice/mariadb.service
+             └─42716 /usr/sbin/mariadbd
+
+May 16 19:40:12 host.test.vps mariadbd[42716]: Version: '10.6.7-MariaDB-2ubuntu1'  socket: '/run/mysqld/mysqld.sock'  port: 3306  Ubuntu 22.04
+May 16 19:40:12 host.test.vps systemd[1]: Started MariaDB 10.6.7 database server.
+
+To check the installed MariaDB database version you can execute the following command:
+
+mysql -V
+You should receive the following output:
+
+root@vps:~# mysql -V
+mysql  Ver 15.1 Distrib 10.6.7-MariaDB, for debian-linux-gnu (x86_64) using  EditLine wrapper
+Step 5. Create Database and Database User
+We need to create a database, and database user before we install the NextCloud.
+
+CREATE DATABASE nextcloud;
+GRANT ALL PRIVILEGES ON nextcloud.* TO 'nextcloud'@'localhost' IDENTIFIED BY 'YourStrongPasswordHere';
+FLUSH PRIVILEGES;
+exit;
+Step 6. Install Nextcloud
+The latest stable version of NextCloud is NextCloud 24.0.1 go into the Apache document root and download the latest version:</p
+
+cd /var/www/html
+
+wget https://download.nextcloud.com/server/releases/nextcloud-24.0.1.zip
+
+Once the installation is downloaded, extract it with the following command.
+
+unzip nextcloud-24.0.1.zip
+After extracting, we need to set up the right permissions:
+
+chown -R www-data:www-data /var/www/html/nextcloud
+Step 7. Create Apache Virtual Host File
+In order can access NextCloud via domain name we need to create Apache Virtual Host file.
+
+First, create the configuration file with the following command:
+
+touch /etc/apache2/sites-available/nextcloud.conf
+Open the file, and paste the following lines of code:
+
+<VirtualHost *:80>
+ServerName yourdomain.com
+DocumentRoot /var/www/html/nextcloud
+
+<Directory /var/www/html/nextcloud/>
+ Require all granted
+ Options FollowSymlinks MultiViews
+ AllowOverride All
+ <IfModule mod_dav.c>
+ Dav off
+ </IfModule>
+</Directory>
+
+ErrorLog /var/log/apache2/yourdomain.com.error_log
+CustomLog /var/log/apache2/yourdomain.com.access_log common
+</VirtualHost>
+Enable the Apache2 confguration file and other modules:
+
+sudo a2ensite nextcloud.conf
+
+sudo a2enmod rewrite
+Check the syntax of the Apache2 configuration.
+
+apachectl -t
+You should receive the following output:
+
+root@host:~# apachectl -t
+Syntax OK
+If you receive this output you can safely restart the Apache service.
