@@ -1,1 +1,4 @@
-nmtui-connect SSID
+nmtui-connect
+
+nmcli con show
+sudo nmtui
