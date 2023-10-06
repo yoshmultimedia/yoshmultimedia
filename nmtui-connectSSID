@@ -2,3 +2,9 @@ nmtui-connect
 
 nmcli con show
 sudo nmtui
+nmcli con mod "Wired connection 1"
+  ipv4.addresses "HOST_IP_ADDRESS"
+  ipv4.gateway "IP_GATEWAY"
+  ipv4.dns "DNS_SERVER(S)"
+  ipv4.dns-search "DOMAIN_NAME"
+  ipv4.method "manual"
